@@ -17,7 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//principal
+Route::get('/about',  [App\Http\Controllers\PagesController::class, 'about']);
+Route::get('/index',  [App\Http\Controllers\PagesController::class, 'index']);
 
+//posts
+//con esta linea genero todas las acciones del controlador
+Route::resource('posts', 'App\Http\Controllers\PostsController');
 //ruta login
 Auth::routes();
 
