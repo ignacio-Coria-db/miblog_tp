@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Posts; //incluir modelo
+
 class PostsController extends Controller
 {
     /**
@@ -13,7 +15,8 @@ class PostsController extends Controller
      */
     public function index()
     {
-        return view('posts.index');
+        $posts = Posts::all();
+        return view('posts.index', ["posts"=>$posts]);
     }
 
     /**
@@ -34,7 +37,18 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validar datos del formulario create
+        $this->validate($request, [
+            'titulo' =>'required',
+            'contenido'=>'required',
+        ]);
+
+        $post = new Posts();
+        $post->titulo = $request->input('titulo');
+        $post->contenido = $request->input('contenido');
+        $post->save();
+
+        return redirect('/posts')->with("succes", "Post creado Exitosamente"); //lista de todos los posts
     }
 
     /**
@@ -45,7 +59,8 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Posts::find($id);
+        return view('posts.show',['post' => $post]);
     }
 
     /**
@@ -56,7 +71,8 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Posts::find($id);
+        return view('posts.edit', ['post'=>$post]);
     }
 
     /**
@@ -68,7 +84,18 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+         //validar datos del formulario 
+         $this->validate($request, [
+            'titulo' =>'required',
+            'contenido'=>'required',
+        ]);
+
+        $post =  Posts::find($id);
+        $post->titulo = $request->input('titulo');
+        $post->contenido = $request->input('contenido');
+        $post->save();
+
+        return redirect('/posts')->with("succes", "Post editado Exitosamente"); //lista de todos los posts
     }
 
     /**
@@ -79,6 +106,9 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post =  Posts::find($id);
+        $post->delete();
+
+        return redirect('/posts')->with("succes", "Post eliminado Exitosamente"); //lista de todos los posts
     }
 }
